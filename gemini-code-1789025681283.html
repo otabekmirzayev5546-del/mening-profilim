@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaxsiy Profil | Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        
+        :root {
+            --bg-color: #0f0505;
+            --gradient-top: #3a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-sub: #a09e9e;
+            --accent: #e53935;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--gradient-top) 0%, var(--bg-color) 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Kompyuterda o'rtaga joylash uchun */
+            padding: 20px 0;
+        }
+
+        /* Umumiy Konteyner (Mobil uchun standart) */
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        
+        .profile-img {
+            width: 110px; height: 110px; border-radius: 50%;
+            object-fit: cover; border: 2px solid var(--accent);
+            margin-bottom: 15px; box-shadow: 0 0 20px rgba(229, 57, 53, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .name { font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 5px; transition: font-size 0.3s ease;}
+        .role { color: var(--accent); font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;}
+        .desc { font-size: 14px; color: var(--text-sub); margin-bottom: 30px; padding: 0 10px; line-height: 1.5;}
+        
+        .section-title { font-size: 12px; color: var(--text-sub); letter-spacing: 2px; margin-bottom: 15px; border-top: 1px solid var(--card-border); padding-top: 20px;}
+
+        .links-container { display: flex; flex-direction: column; gap: 12px; }
+        .link-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 15px 20px; display: flex;
+            align-items: center; text-decoration: none; color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+        
+        .link-card:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            transform: translateY(-3px); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .link-icon {
+            width: 40px; height: 40px; background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px; display: flex; justify-content: center; align-items: center;
+            font-size: 18px; margin-right: 15px;
+        }
+        .link-info { flex-grow: 1; }
+        .link-title { font-weight: 600; font-size: 15px; margin-bottom: 3px; }
+        .link-sub { font-size: 12px; color: var(--text-sub); }
+        .link-arrow { color: var(--text-sub); font-size: 12px; transition: transform 0.3s ease; }
+        
+        .link-card:hover .link-arrow { transform: translateX(5px); color: var(--accent); }
+
+        /* Kompyuter (PC) va Katta ekranlar uchun moslashuvchanlik */
+        @media (min-width: 768px) {
+            body { padding: 40px 0; }
+            .container {
+                background: rgba(20, 10, 10, 0.4);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border: 1px solid var(--card-border);
+                border-radius: 24px;
+                box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+                padding: 40px 50px;
+                max-width: 600px;
+            }
+            .profile-img { width: 130px; height: 130px; margin-bottom: 20px; }
+            .name { font-size: 34px; }
+            .desc { font-size: 15px; }
+            .link-card { padding: 18px 25px; gap: 5px;}
+            .link-icon { width: 45px; height: 45px; font-size: 20px; }
+            .link-title { font-size: 17px; }
+            .link-sub { font-size: 13px; }
+        }
+
+        .admin-btn {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 55px; height: 55px; background: var(--accent); color: white;
+            border-radius: 50%; border: none; font-size: 22px; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(229, 57, 53, 0.5); z-index: 100;
+            transition: transform 0.3s;
+        }
+        .admin-btn:hover { transform: scale(1.1) rotate(90deg); }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
+            z-index: 200; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: #151515; padding: 30px; border-radius: 20px;
+            width: 90%; max-width: 420px; border: 1px solid #333;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-sub); margin-bottom: 6px; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 12px; background: #080808;
+            border: 1px solid #2a2a2a; color: white; border-radius: 10px;
+            outline: none; transition: border 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+        
+        .password-section {
+            border-top: 1px dashed #333; padding-top: 15px; margin-top: 15px;
+        }
+
+        .btn-save {
+            width: 100%; padding: 14px; background: var(--accent); color: white;
+            border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 10px;
+        }
+        .btn-cancel {
+            width: 100%; padding: 14px; background: transparent; color: white;
+            border: 1px solid #333; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 10px;
+        }
+        #admin-panel .modal-content { max-height: 85vh; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-view">
+        <div class="header">
+            <img src="" alt="Profile" class="profile-img" id="view-img">
+            <div class="name" id="view-name"></div>
+            <div class="role" id="view-role"></div>
+            <div class="desc" id="view-desc"></div>
+        </div>
+        <div class="section-title">BOG'LANISH</div>
+        <div class="links-container"></div>
+    </div>
+
+    <button class="admin-btn" onclick="showLogin()"><i class="fas fa-cog"></i></button>
+
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">Admin Kirish</h2>
+            <div class="form-group">
+                <input type="password" id="admin-pass" placeholder="Parolni kiriting">
+            </div>
+            <button class="btn-save" onclick="checkPassword()">Kirish</button>
+            <button class="btn-cancel" onclick="closeModals()">Bekor qilish</button>
+        </div>
+    </div>
+
+    <div class="modal" id="admin-panel">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">Ma'lumotlarni Tahrirlash</h2>
+            
+            <div class="form-group">
+                <label>Profil Rasmi (Fayl tanlang)</label>
+                <input type="file" id="edit-img-file" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>Ism Familiya</label>
+                <input type="text" id="edit-name">
+            </div>
+            <div class="form-group">
+                <label>Mutaxassislik</label>
+                <input type="text" id="edit-role">
+            </div>
+            <div class="form-group">
+                <label>Qisqacha ma'lumot</label>
+                <textarea id="edit-desc" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Telefon raqam</label>
+                <input type="text" id="edit-phone">
+            </div>
+            <div class="form-group">
+                <label>Telegram Username (ssilka)</label>
+                <input type="text" id="edit-tg">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" id="edit-email">
+            </div>
+            <div class="form-group">
+                <label>Instagram Username</label>
+                <input type="text" id="edit-insta">
+            </div>
+
+            <div class="password-section">
+                <div class="form-group">
+                    <label style="color: var(--accent);">Admin parolini almashtirish (ixtiyoriy)</label>
+                    <input type="password" id="edit-password" placeholder="Yangi parolni kiriting...">
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="saveData()">Saqlash</button>
+            <button class="btn-cancel" onclick="closeModals()">Yopish</button>
+        </div>
+    </div>
+
+    <script>
+        // Rasm fayl nomi va ma'lumotlaringiz
+        const defaultData = {
+            img: "Subject_wearing_suit_in_elevator_2K_202609092211.jpeg",
+            name: "Mamadaliyev Bexruzbek",
+            role: "AI MUTAXASISI",
+            desc: "Ai da video yaratish dasturchilik avtomatlashtirish.",
+            phone: "+998979997992",
+            tg: "@mamadaliyevbro",
+            email: "Behruzbekmamdaliyev712@gmail.com",
+            insta: "@mamadaliyev_ai"
+        };
+
+        let currentData = JSON.parse(localStorage.getItem('profileData')) || defaultData;
+        let savedPassword = localStorage.getItem('appPassword') || "Mamadaliyev712";
+
+        function renderProfile() {
+            document.getElementById('view-img').src = currentData.img;
+            document.getElementById('view-name').innerText = currentData.name;
+            document.getElementById('view-role').innerText = currentData.role;
+            document.getElementById('view-desc').innerText = currentData.desc;
+
+            const linksContainer = document.querySelector('.links-container');
+            linksContainer.innerHTML = `
+                <a href="tel:${currentData.phone}" class="link-card">
+                    <div class="link-icon"><i class="fas fa-phone-alt"></i></div>
+                    <div class="link-info">
+                        <div class="link-title">${currentData.phone}</div>
+                        <div class="link-sub">Qo'ng'iroq qilish</div>
+                    </div>
+                    <i class="fas fa-arrow-right link-arrow"></i>
+                </a>
+                <a href="https://t.me/${currentData.tg.replace('@', '')}" class="link-card">
+                    <div class="link-icon"><i class="fab fa-telegram-plane"></i></div>
+                    <div class="link-info">
+                        <div class="link-title">Telegram</div>
+                        <div class="link-sub">${currentData.tg}</div>
+                    </div>
+                    <i class="fas fa-arrow-right link-arrow"></i>
+                </a>
+                <a href="mailto:${currentData.email}" class="link-card">
+                    <div class="link-icon"><i class="far fa-envelope"></i></div>
+                    <div class="link-info">
+                        <div class="link-title">Email</div>
+                        <div class="link-sub">${currentData.email}</div>
+                    </div>
+                    <i class="fas fa-arrow-right link-arrow"></i>
+                </a>
+                <a href="https://instagram.com/${currentData.insta.replace('@', '')}" class="link-card">
+                    <div class="link-icon"><i class="fab fa-instagram"></i></div>
+                    <div class="link-info">
+                        <div class="link-title">Instagram</div>
+                        <div class="link-sub">${currentData.insta}</div>
+                    </div>
+                    <i class="fas fa-arrow-right link-arrow"></i>
+                </a>
+            `;
+        }
+
+        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
+
+        function closeModals() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('admin-pass').value = '';
+            document.getElementById('edit-password').value = '';
+        }
+
+        function checkPassword() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === savedPassword) {
+                document.getElementById('login-modal').style.display = 'none';
+                openAdminPanel();
+            } else {
+                alert("Parol noto'g'ri!");
+            }
+        }
+
+        function openAdminPanel() {
+            document.getElementById('admin-panel').style.display = 'flex';
+            document.getElementById('edit-name').value = currentData.name;
+            document.getElementById('edit-role').value = currentData.role;
+            document.getElementById('edit-desc').value = currentData.desc;
+            document.getElementById('edit-phone').value = currentData.phone;
+            document.getElementById('edit-tg').value = currentData.tg;
+            document.getElementById('edit-email').value = currentData.email;
+            document.getElementById('edit-insta').value = currentData.insta;
+        }
+
+        function getBase64(file, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () { callback(reader.result); };
+        }
+
+        function saveData() {
+            const fileInput = document.getElementById('edit-img-file');
+            const newPassword = document.getElementById('edit-password').value;
+
+            if (newPassword.trim() !== "") {
+                savedPassword = newPassword.trim();
+                localStorage.setItem('appPassword', savedPassword);
+            }
+            
+            const updateDataObj = (imgSrc) => {
+                currentData = {
+                    img: imgSrc || currentData.img,
+                    name: document.getElementById('edit-name').value,
+                    role: document.getElementById('edit-role').value,
+                    desc: document.getElementById('edit-desc').value,
+                    phone: document.getElementById('edit-phone').value,
+                    tg: document.getElementById('edit-tg').value,
+                    email: document.getElementById('edit-email').value,
+                    insta: document.getElementById('edit-insta').value
+                };
+                localStorage.setItem('profileData', JSON.stringify(currentData));
+                renderProfile();
+                closeModals();
+                alert("Ma'lumotlar muvaffaqiyatli saqlandi!");
+            };
+
+            if (fileInput.files.length > 0) {
+                getBase64(fileInput.files[0], (base64Img) => { updateDataObj(base64Img); });
+            } else {
+                updateDataObj(null);
+            }
+        }
+
+        renderProfile();
+    </script>
+</body>
+</html>
